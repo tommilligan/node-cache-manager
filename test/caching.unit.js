@@ -497,6 +497,18 @@ describe("caching", function() {
                     });
                 });
 
+                it("when a ttl is passed in with a different value", function(done) {
+                    var longTtl = {ttl: 0.49};
+                    cache.wrap(key, function(cb) {
+                        methods.getWidget(name, cb);
+                    }, longTtl, function(err, widget) {
+                        checkErr(err);
+                        assert.deepEqual(widget, {name: name});
+                        sinon.assert.calledWith(memoryStoreStub.set, key, {name: name}, longTtl);
+                        done();
+                    });
+                });
+
                 it("when a ttl is not passed in", function(done) {
                     cache.wrap(key, function(cb) {
                         methods.getWidget(name, cb);
